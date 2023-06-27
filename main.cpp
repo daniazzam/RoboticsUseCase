@@ -15,8 +15,18 @@ void initializeZonesAndPath(const std::string& filename, std::vector<Rectangle>&
 
     std::string line;
 
+    // Lambda Function to check for next non-empty lines
+    auto readNextNonEmptyLine = [&]() {
+        while (std::getline(inputFile, line)) {
+            if (!line.empty()) {
+                return true;  // Found a non-empty line
+            }
+        }
+        return false;  // No more lines to read
+    };
+
     // Extracting the path
-    if (std::getline(inputFile, line)) {
+    if (readNextNonEmptyLine()) {
         std::istringstream iss(line);
         double x, y;
 
@@ -26,10 +36,12 @@ void initializeZonesAndPath(const std::string& filename, std::vector<Rectangle>&
             }
             robot.addPointToPath({x, y});
         }
+    } else {
+        throw std::runtime_error("Invalid input: Empty File");
     }
 
-    // Extracting the zones 
-    while (std::getline(inputFile, line)) {
+    // Extracting the zones
+    while (readNextNonEmptyLine()) {
         std::istringstream iss(line);
         std::string zoneName;
         double x, y, width, height;
@@ -46,6 +58,7 @@ void initializeZonesAndPath(const std::string& filename, std::vector<Rectangle>&
 
     inputFile.close();
 }
+
 
 int main() {
     try {

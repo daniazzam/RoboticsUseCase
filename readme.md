@@ -42,26 +42,73 @@ Note: If you want to use a different input file, update the filename variable in
 
 ## Algorithm
 
-The main algorithm of the program, implemented in the `main()` function, can be summarized as follows:
+The provided C++ code reads input from a text file, processes the data, and performs operations based on the input. Here is a step-by-step explanation of how the algorithm works:
 
-1. Read the input file and initialize the robot's path and the zones.
-2. Create a vector of flags to keep track of whether the robot has entered a zone or not.
-3. Iterate over each point in the robot's path.
-4. For each point, iterate over the zones.
-   - Check if the point is within the range (1 meter) of the current zone.
-   - If it is within range:
-     - Check if the point is inside the current zone.
-       - If it is inside the zone:
-         - Log the message "Inside [zone name]".
-         - Update the flag for the current zone to indicate that the robot has entered the zone.
-       - If it is not inside the zone:
-         - If the flag for the current zone is set (indicating the robot was previously inside the zone):
-           - Log the message "Exiting [zone name]".
-         - Else:
-           - Log the message "About to enter [zone name]".
-   - If the point is not within range and the flag for the current zone is set:
-     - Reset the flag to indicate that the robot has exited the zone.
-   - Print an empty line to separate the log entries for each point.
-5. The program finishes execution.
+1. File Initialization:
+   - Include necessary header files and define the `initializeZonesAndPath` function.
+   - Open the specified file using an `std::ifstream` object named `inputFile`. If the file fails to open, an exception is thrown.
+   - Declare a string variable named `line` to store each line read from the file.
+
+2. Lambda Function:
+   - Define a lambda function named `readNextNonEmptyLine` to handle the task of reading the next non-empty line from the file.
+   - Use a `while` loop with `std::getline` to read lines until a non-empty line is encountered.
+   - The lambda function returns `true` if a non-empty line is found and `false` if there are no more lines to read.
+
+3. Path Extraction:
+   - Call the `readNextNonEmptyLine` function to check for a non-empty line.
+   - If a non-empty line is found:
+     - Process the line to extract pairs of `x` and `y` coordinates using an `std::istringstream` object named `iss`.
+     - Add the extracted coordinates to the `Robot` object's path using the `addPointToPath` method.
+   - If no non-empty line is found for the path information, an exception is thrown.
+
+4. Zone Extraction:
+   - Call the `readNextNonEmptyLine` function to check for a non-empty line.
+   - If a non-empty line is found:
+     - Process the line to extract the zone name, `x` and `y` coordinates, width, and height using the `iss` object.
+     - Create `Rectangle` objects with the extracted information and add them to the `zones` vector.
+   - If there is an issue with the input format (e.g., incorrect syntax or missing values), an exception is thrown.
+
+5. File Closing:
+   - Once all the lines have been processed, close the input file.
+
+6. Main Function:
+   - Create a `Robot` object named `robot`, declare a filename variable, and initialize an empty vector of `Rectangle` objects named `zones`.
+   - Call the `initializeZonesAndPath` function, passing the filename, `zones` vector, and `robot` object as arguments.
+   - This function reads the input file and populates the `robot` object with path information and the `zones` vector with zone information.
+
+7. Flag Initialization:
+   - Create a vector of characters named `flags` with the same size as the `zones` vector, initialized with all zeros.
+   - This vector will be used to track the status of each zone.
+
+8. Zone Tracking:
+   - Initialize an integer variable named `count` to zero. It will keep track of the index of the current zone while iterating over the `zones` vector.
+   - Enter a nested loop:
+     - The outer loop iterates over each point in the `robot` object's path.
+     - The inner loop iterates over each `Rectangle` object in the `zones` vector.
+     - For each point and zone pair:
+       - Check if the point is within the range of the zone by calling the `checkIfPointWithinRange` method of the `Rectangle` object.
+       - If the point is within the zone's range:
+         - Check if the point is inside the zone by calling the `checkIfPointInZone` method.
+         - If the point is inside the zone:
+           - Print a message indicating that the point is inside the current zone's name.
+           - Set the corresponding flag in the `flags` vector to 1 if it is not already set.
+         - If the point is outside the zone but within its range:
+           - Check the corresponding flag in the `flags` vector.
+           - If the flag is set, print a message indicating that the point is exiting the current zone.
+           - If the flag is not set, print a message indicating that the point is about to enter the current zone.
+       - If the point is outside the zone's range, reset the corresponding flag in the `flags` vector to 0.
+       - Increment the `count` variable to move to the next zone.
+     - After processing all points for a given zone, reset the `count` variable to zero and print a newline character.
+
+9. Exception Handling:
+   - Use a `try-catch` block to catch any exceptions thrown during the execution of the program.
+   - If an exception occurs, print an error message indicating the exception's details.
+
+10. Program Termination:
+    - Once all the points have been processed, the program ends.
+    - Return 0 to indicate successful execution.
+
+This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the repetitive task of reading the next non-empty line from the input file. By encapsulating this logic in a lambda function, the code becomes more concise and readable.
+
 
 

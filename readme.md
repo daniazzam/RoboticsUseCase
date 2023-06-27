@@ -34,7 +34,7 @@ This command compiles the source files and creates an executable file named `pro
 5. Run the program by executing the generated executable:
 
    ```shell
-   ./robot_zone_interaction
+   ./program
    
 The program will read the input file (`input.txt` by default), process the robot's path and the zones, and log the occurrences where the robot interacts with the zones.
 

@@ -98,7 +98,7 @@ The provided C++ code reads input from a text file, processes the data, and perf
            - If the flag is not set, print a message indicating that the point is about to enter the current zone.
        - If the point is outside the zone's range, reset the corresponding flag in the `flags` vector to 0.
        - Increment the `count` variable to move to the next zone.
-     - After processing all points for a given zone, reset the `count` variable to zero and print a newline character.
+     - After processing all zones for a given point, reset the `count` variable to zero.
 
 9. Exception Handling:
    - Use a `try-catch` block to catch any exceptions thrown during the execution of the program.

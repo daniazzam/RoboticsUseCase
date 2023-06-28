@@ -104,4 +104,22 @@ The provided C++ code reads input from a text file, processes the data, and perf
    - Use a `try-catch` block to catch any exceptions thrown during the execution of the program.
    - If an exception occurs, print an error message indicating the exception's details.
 
-This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the repetitive task of reading the next non-empty line from the input file. By encapsulating this logic in a lambda function, the code becomes more concise and readable.
+This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the repetitive task of reading the next non-empty line from the input file. In SecondVersion branch, I added the use of smart pointers.
+
+## Extra Modern CPP features Added to FirstVersion branch
+
+1. Lambda Functions
+
+2. Smart Pointers
+
+   In this modified code, the zones vector is now a vector of `std::unique_ptr<Rectangle>`. The `initializeZonesAndPath` function uses `std::make_unique` to dynamically allocate Rectangle objects and stores them as unique pointers in the zones vector. The deallocation of memory for the Rectangle objects is automatically handled by the `std::unique_ptr` when the vector goes out of scope.
+
+   In the code, I made the following changes:
+
+   - Changed the `zones` vector to `std::vector<std::unique_ptr<Rectangle>> zones` to store Rectangle objects as `std::unique_ptr`. It ensures that the dynamically allocated objects are properly deallocated when they are no longer needed. By using `std::unique_ptr`, I avoid the need to manually call delete on the objects.
+
+   - Modified the `initializeZonesAndPath` function to use `std::make_unique`: Instead of directly creating Rectangle objects and adding them to the zones vector, I used `std::make_unique` to store them as `std::unique_ptr<Rectangle>`.
+
+   - Changed the iteration over zones to use `const auto& z`: When iterating over the zones vector, I used `const auto& z` instead of copying the `std::unique_ptr<Rectangle>` objects. This avoids unnecessary copying of the smart pointers and improves performance.
+
+   - In the previous code, `z.checkIfPointWithinRange(p)` was used to call the member function `checkIfPointWithinRange` on the Rectangle object z. However, in the modified code that uses smart pointers, we store Rectangle objects as `std::unique_ptr<Rectangle>` in the zones vector. To access the member functions of the Rectangle objects through the smart pointer, we use the arrow operator `(->)`. The arrow operator is used to dereference the smart pointer and access the member functions. It is equivalent to (*z).checkIfPointWithinRange(p), where the * operator is used to dereference the smart pointer and access the underlying object.

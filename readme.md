@@ -104,11 +104,4 @@ The provided C++ code reads input from a text file, processes the data, and perf
    - Use a `try-catch` block to catch any exceptions thrown during the execution of the program.
    - If an exception occurs, print an error message indicating the exception's details.
 
-10. Program Termination:
-    - Once all the points have been processed, the program ends.
-    - Return 0 to indicate successful execution.
-
 This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the repetitive task of reading the next non-empty line from the input file. By encapsulating this logic in a lambda function, the code becomes more concise and readable.
-
-
-

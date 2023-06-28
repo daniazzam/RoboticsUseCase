@@ -3,10 +3,11 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <memory>
 #include "Robot.h"
 #include "Rectangle.h"
 
-void initializeZonesAndPath(const std::string& filename, std::vector<Rectangle>& zones, Robot& robot) {
+void initializeZonesAndPath(const std::string& filename, std::vector<std::unique_ptr<Rectangle>>& zones, Robot& robot) {
     std::ifstream inputFile(filename);
 
     if (!inputFile.is_open()) {
@@ -50,7 +51,7 @@ void initializeZonesAndPath(const std::string& filename, std::vector<Rectangle>&
             if (zoneName.substr(0, 4) != "zone" && zoneName.substr(0, 4) != "Zone") {
                 throw std::runtime_error("Incorrect input syntax: " + zoneName);
             }
-            zones.push_back({zoneName, {x, y}, width, height});
+            zones.push_back(std::make_unique<Rectangle>(zoneName, Point{x, y}, width, height));
         } else {
             throw std::runtime_error("Wrong input format: " + line);
         }
@@ -64,7 +65,7 @@ int main() {
     try {
         Robot robot;
         std::string filename = "input.txt";
-        std::vector<Rectangle> zones;
+        std::vector<std::unique_ptr<Rectangle>> zones;
 
         initializeZonesAndPath(filename, zones, robot);
 
@@ -72,22 +73,22 @@ int main() {
         int count = 0;
 
         for (Point p : robot.getPath()) {
-            for (Rectangle z : zones) {
+            for (const auto& z : zones) {
                 // Check if point is within the zone range
-                if (z.checkIfPointWithinRange(p)) {
+                if (z->checkIfPointWithinRange(p)) {
                     // Check if point is inside the zone
-                    if (z.checkIfPointInZone(p)) {
+                    if (z->checkIfPointInZone(p)) {
                         // Point is inside the zone
-                        std::cout << "Inside " << z.getName() << std::endl;
+                        std::cout << "Inside " << z->getName() << std::endl;
                         if (!flags[count]) {
                             flags[count] = 1;
                         }
                     } else {
                         // Point is inside range but outside zone
                         if (flags[count]) {
-                            std::cout << "Exiting " << z.getName() << std::endl;
+                            std::cout << "Exiting " << z->getName() << std::endl;
                         } else {
-                            std::cout << "About to enter " << z.getName() << std::endl;
+                            std::cout << "About to enter " << z->getName() << std::endl;
                         }
                     }
                 } else {

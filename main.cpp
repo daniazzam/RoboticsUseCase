@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <memory>
+#include <optional>
 #include "Robot.h"
 #include "Rectangle.h"
 
@@ -69,8 +70,8 @@ int main() {
 
         initializeZonesAndPath(filename, zones, robot);
 
-        std::vector<char> flags(zones.size(), 0);
-        int count = 0;
+        std::vector<std::optional<bool>> flags(zones.size());
+        int count {0};
 
         for (Point p : robot.getPath()) {
             for (const auto& z : zones) {
@@ -80,21 +81,17 @@ int main() {
                     if (z->checkIfPointInZone(p)) {
                         // Point is inside the zone
                         std::cout << "Inside " << z->getName() << std::endl;
-                        if (!flags[count]) {
-                            flags[count] = 1;
-                        }
+                        flags[count] = true;
                     } else {
                         // Point is inside range but outside zone
-                        if (flags[count]) {
+                        if (flags[count].has_value() && flags[count].value()) {
                             std::cout << "Exiting " << z->getName() << std::endl;
                         } else {
                             std::cout << "About to enter " << z->getName() << std::endl;
                         }
                     }
                 } else {
-                    if (flags[count]) {
-                        flags[count] = 0;
-                    }
+                     flags[count] = std::nullopt;
                 }
                 count++;
             }

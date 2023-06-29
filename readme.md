@@ -77,10 +77,14 @@ The provided C++ code reads input from a text file, processes the data, and perf
    - This function reads the input file and populates the `robot` object with path information and the `zones` vector with zone information.
 
 7. Flag Initialization:
-   - Create a vector of characters named `flags` with the same size as the `zones` vector, initialized with all zeros.
+   - Create a vector of characters named `flags` with the same size as the `zones` vector.
    - This vector will be used to track the status of each zone.
 
 8. Zone Tracking:
+
+
+   How it works: If the point is not within a 1-meter range, keep the flag as false. Once it enters the 1-meter range, check the flag. If the flag is false, it means the point was not previously in the range, so print "entering". If the flag is true, it means the point was already inside the zone, so print "leaving". If the point is inside the zone, print "inside" and set/keep the flag true in order to track its state when the point is outside the zone but within the 1-meter range.
+
    - Initialize an integer variable named `count` to zero. It will keep track of the index of the current zone while iterating over the `zones` vector.
    - Enter a nested loop:
      - The outer loop iterates over each point in the `robot` object's path.
@@ -91,12 +95,12 @@ The provided C++ code reads input from a text file, processes the data, and perf
          - Check if the point is inside the zone by calling the `checkIfPointInZone` method.
          - If the point is inside the zone:
            - Print a message indicating that the point is inside the current zone's name.
-           - Set the corresponding flag in the `flags` vector to 1 if it is not already set.
+           - Set the corresponding flag in the `flags` vector to true if it is not already set.
          - If the point is outside the zone but within its range:
            - Check the corresponding flag in the `flags` vector.
            - If the flag is set, print a message indicating that the point is exiting the current zone.
            - If the flag is not set, print a message indicating that the point is about to enter the current zone.
-       - If the point is outside the zone's range, reset the corresponding flag in the `flags` vector to 0.
+       - If the point is outside the zone's range, reset the corresponding flag in the `flags` vector to false.
        - Increment the `count` variable to move to the next zone.
      - After processing all points for a given zone, reset the `count` variable to zero and print a newline character.
 
@@ -108,9 +112,23 @@ This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the
 
 ## Extra Modern CPP features Added to FirstVersion branch
 
-1. Lambda Functions | Auto type inference | Range-based for loop | Initializer Lists
+1. Lambda Functions 
 
-2. Smart Pointers
+2. Range-based for loop 
+
+3. Auto type inference 
+
+   I used the auto keyword to automatically deduce the type of the variable in `zones` vector: `std::unique_ptr<Rectangle>`.
+
+4. Initializer Lists
+
+   Initialize objects using braced initializer lists ({}) for uniform and concise initialization.
+
+5. Using std::optional
+
+   Instead of using flags to represent the state of zones, I used `std::optional` to provide a more expressive and type-safe representation. It allows me to express the possibility of having a value (`true` or `false`) or having no value (`std::nullopt`).
+
+6. Smart Pointers
 
    In this modified code, the zones vector is now a vector of `std::unique_ptr<Rectangle>`. The `initializeZonesAndPath` function uses `std::make_unique` to dynamically allocate Rectangle objects and stores them as unique pointers in the zones vector. The deallocation of memory for the Rectangle objects is automatically handled by the `std::unique_ptr` when the vector goes out of scope.
 

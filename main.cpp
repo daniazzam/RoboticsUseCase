@@ -33,7 +33,7 @@ void initializeZonesAndPath(const std::string& filename, std::vector<std::unique
 
         while (iss >> x) {
             if (!(iss >> y)) {
-                throw std::runtime_error("Invalid input: Incorrect type (missing) 'y' value for final x of respective value " + std::to_string(x));
+                throw std::runtime_error("Invalid input: (Incorrect input type / missing 'y' value for final x) of respective value " + std::to_string(x));
             }
             robot.addPointToPath({x, y});
         }

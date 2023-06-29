@@ -108,7 +108,7 @@ This algorithm utilizes a lambda function, `readNextNonEmptyLine`, to handle the
 
 ## Extra Modern CPP features Added to FirstVersion branch
 
-1. Lambda Functions
+1. Lambda Functions | Auto type inference | Range-based for loop | Initializer Lists
 
 2. Smart Pointers
 
